@@ -16,11 +16,11 @@ def concat(arr, fixedlength):
     return arr
 
 def loadConfig():
-    with open("./config.json", "r") as f:
+    with open("./scb", "r") as f:
         return json.loads(f.read())
 
 def writeConfig(newConfigObject):
-    with open("./config.json", "w") as f:
+    with open("./scb", "w") as f:
         f.write(json.dumps(newConfigObject))
 
 
