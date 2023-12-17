@@ -75,7 +75,7 @@ def headerDir(action, arg):
 
     writeConfig(cfg)
 
-def execute():
+def build():
     cfg = loadConfig()
     os.system(f"{cfg['compiler']} -I {cfg['headerDir']} {' '.join(cfg['files'])} -o {cfg['outfile']}")
 
@@ -103,8 +103,8 @@ def main(args):
         compiler(args[2], args[3])
     elif(args[1] == "out"):
         outfile(args[2], args[3])
-    elif(args[1] == None):
-        execute()
+    elif(args[1] == "build"):
+        build()
 
 if(__name__ == "__main__"):
     main(sys.argv)
