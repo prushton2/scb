@@ -7,7 +7,7 @@ I would rather build my own C build tool than use someone elses, so here it is.
 I will implement help. In the meantime:
 
 # init
-Initializes the build tool, creating config.json. Add this to your gitignore yourself.
+Initializes the build tool, creating the file scb. Add this to your gitignore yourself.
 
 # file
 Command for adding/removing files to the tool.
@@ -30,4 +30,7 @@ Arguments:
 -s (name)       Takes a file name for the outfile
 
 # build
-Builds the project 
+Builds the project
+
+Arguments:
+-r              Runs the built executable

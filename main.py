@@ -27,7 +27,7 @@ def writeConfig(newConfigObject):
 # Command Functions
 def init():
     writeConfig(initConfig)
-    print(f"Initialized build tool. Add config.json to gitignore")
+    print(f"Initialized build tool. Add scb to gitignore")
 
 def compiler(action, arg):
     cfg = loadConfig()
@@ -75,9 +75,12 @@ def headerDir(action, arg):
 
     writeConfig(cfg)
 
-def build():
+def build(arg):
     cfg = loadConfig()
     os.system(f"{cfg['compiler']} -I {cfg['headerDir']} {' '.join(cfg['files'])} -o {cfg['outfile']}")
+    if(arg == "-r"):
+        os.system(f"./{cfg['outfile']}")
+
 
 def outfile(action, arg):
     cfg = loadConfig()    
@@ -104,7 +107,7 @@ def main(args):
     elif(args[1] == "out"):
         outfile(args[2], args[3])
     elif(args[1] == "build"):
-        build()
+        build(args[2])
 
 if(__name__ == "__main__"):
     main(sys.argv)
