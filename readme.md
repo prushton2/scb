@@ -25,7 +25,7 @@ Arguments:
 
 # out
 Displays the current name of the outfile
-
+ 
 Arguments:
 -s (name)       Takes a file name for the outfile
 
