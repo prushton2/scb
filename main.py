@@ -95,41 +95,41 @@ def outfile(action, arg):
     writeConfig(cfg)
 
 def help(command):
+    print("SCB Help")
     if(command == None or command == "init"):
-        print("\ninit\n   initialize the build tool and creates the file scb. Add this to .gitignore")
+        print("init\n   initialize the build tool and creates the file scb. Add this to .gitignore")
+    
     if(command == None or command == "file"):
-        print("\nfile\n   Manages files the build tool should keep track of")
-        print(tabulate([
-            ["Arguments", "", ""],
-            ["-a", "[files]", "Takes a list of files and tracks them"],
-            ["-r", "[files]", "Takes a list of files and untracks them"],
-            ["-ls", "", "Lists tracked files"],
-        ], headers="firstrow"))
+        print("\nfile")
+        print("""  Manages files the build tool should keep track of
+    Arguments
+    -a   [files]  Takes a list of files and tracks them
+    -r   [files]  Takes a list of files and untracks them
+    -ls           Lists tracked files""")
+
     if(command == None or command == "header"):
-        print("\nheader\n   Displays the current header directory")
-        print(tabulate([
-            ["Arguments", "", ""],
-            ["-a", "[path]", "Takes a path and sets it as the header directory"]
-        ], headers="firstrow"))
+        print("\nheader")
+        print("""  Displays the current header directory
+    Arguments
+    -s   [dir]  Sets the directory as the header directory""")
+
     if(command == None or command == "out"):
-        print("\nout\n   Displays the name of the outfile")
-        print(tabulate([
-            ["Arguments", "", ""],
-            ["-a", "[path]", "Takes a path and sets the outfile"]
-        ], headers="firstrow"))
+        print("\nout")
+        print("""  Displays the outfile
+    Arguments
+    -s   [file]  Sets the file as the outfile""")
     
     if(command == None or command == "compiler"):
-        print("\ncompiler\n   Displays the current compiler")
-        print(tabulate([
-            ["Arguments", "", ""],
-            ["-s", "command", "Sets the compiler to the provided command"]
-        ], headers="firstrow"))
+        print("\ncompiler")
+        print("""  Displays the current compiler
+    Arguments
+    -s   [compiler]  Updates the compiler""")
+
     if(command == None or command == "build"):
-        print("\nbuild\n   Builds the project")
-        print("   "+tabulate([
-            ["Arguments", "", ""],
-            ["-r", "", "Runs the project after building"]
-        ], headers="firstrow"))
+        print("\build")
+        print("""  Builds the project
+    Arguments
+    -r   Runs the project after building""")
 
 
 # Main
@@ -149,5 +149,6 @@ def main(args):
         build(args[2])
     elif(args[1] == "help"):
         help(args[2])
+        
 if(__name__ == "__main__"):
     main(sys.argv)
