@@ -126,7 +126,7 @@ def help(command):
     -s   [compiler]  Updates the compiler""")
 
     if(command == None or command == "build"):
-        print("\build")
+        print("\nbuild")
         print("""  Builds the project
     Arguments
     -r   Runs the project after building""")
@@ -147,8 +147,10 @@ def main(args):
         outfile(args[2], args[3])
     elif(args[1] == "build"):
         build(args[2])
-    elif(args[1] == "help" or args[1] == None):
+    elif(args[1] == "help"):
         help(args[2])
+    else:
+        build(args[1])
 
 if(__name__ == "__main__"):
     main(sys.argv)
