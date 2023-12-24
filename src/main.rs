@@ -1,14 +1,15 @@
 use std::env;
 use serde::{Serialize, Deserialize};
 use serde_json;
-
+use std::fs;
+use std::io::Write;
 
 #[derive(Serialize, Deserialize)]
 struct Config {
 	compiler: String,
 	header_dir: String,
 	outfile: String,
-	// files: &'a [&'a str],
+	files: Vec<String>,
 }
 
 struct Args {
@@ -40,65 +41,170 @@ fn arguments<'a>() -> Args {
 }
 
 
-// static FILE_NAME: &str = "SCB";
+static FILE_NAME: &str = "scb";
 
-fn load_config(file_name: &str) {
-	let config: Config = Config {
-		compiler: "comp".to_string(),
-		header_dir: "headir".to_string(),
-		outfile: "of".to_string(),
-		// files: &["f1", "f2", "f3"],
-	};
+fn load_config(file_name: &str) -> Result<Config, &str> {
+	let file_contents = fs::read_to_string(file_name);
 
 
-    let j = serde_json::to_string(&config);
-	
-	if j.is_ok() {
-		println!("{:?}", j.ok());
+	if file_contents.is_err() {
+		println!("File could not be read.");
+		return Err("File could not be read")
 	}
 
-	// if serialized.is_ok() {
-	// println!("{}", j);	// } else {
-		// println!("{:#?}", serialized.err());
-	// }
+	let config: Config = serde_json::from_str(&file_contents.unwrap()).unwrap();
 
-
-
-	// return config;
+	return Ok(config)
 }
 
 
-// fn init() {}
+fn write_config(file_name: &str, config: Config) -> Result<&str, &str> {
+	
+	let file_result = fs::File::create(file_name);
+    let serialized = serde_json::to_string(&config);
+
+	if serialized.is_err() {
+		return Err("Serialization Failed")
+	}
+
+	if file_result.is_err() {
+		return Err("Error opening file")
+	}
+
+	let mut file = file_result.unwrap();
+
+	let _ = file.write_all(serialized.unwrap().as_bytes());
+	return Ok("File Written")
+}
+
+fn init() {
+	let config: Config = Config {
+		compiler: "gcc".to_string(),
+		header_dir: "../".to_string(),
+		outfile: "main".to_string(),
+		files: vec!["main.c".to_string()]
+	};
+
+	let _ = write_config(FILE_NAME, config);
+}
 // fn build() {}
 // fn help() {}
 
 fn str_config(key: &str, value: &str) {
-	println!("{}: {}", key, value);
+	let result: Result<Config, &str> = load_config(FILE_NAME);
+	if result.is_err() {
+		println!("Error loading config");
+		return;
+	}
+
+	let mut config: Config = result.unwrap();
+
+	let mut object: String = String::from("");
+
+	match key {
+		"compiler" => object = config.compiler.clone(),
+		"header_dir" => object = config.header_dir.clone(),
+		"outfile" => object = config.outfile.clone(),
+		&_ => println!("Invalid Key")
+	}
+
+	if value == "" {
+		println!("{}: {}", key, object);
+	} else {
+		object = value.to_string();
+		println!("Set {} to {}", key, value);
+	}
+	
+
+	match key {
+		"compiler" => config.compiler = object.clone(),
+		"header_dir" => config.header_dir = object.clone(),
+		"outfile" => config.outfile = object.clone(),
+		&_ => println!("You shouldnt be here")
+	}
+
+
+	let _ = write_config(FILE_NAME, config);
 }
 
-fn arr_config(key: &str, action: &str, value: &[&str]) {
-	// for i in value {
-	// 	println!("{}", i);
-	// }
+fn arr_config(key: &str, action: &str, value: &[String]) {
+	let result: Result<Config, &str> = load_config(FILE_NAME);
+	if result.is_err() {
+		println!("Error loading config");
+		return;
+	}
 
-	// let config: Config = 
-	load_config("aaaaaaa");
-	// println!("{}\n{}\n{}", config.compiler, config.header_dir, config.outfile);
-	// println!("{}\n{}\n{}", config.files[0], config.files[1], config.files[2]);
+	let mut config: Config = result.unwrap();
+
+	let mut object: Vec<String> = vec![];
+
+	match key {
+		"files" => object = config.files.clone(),
+		&_ => println!("Invalid Key")
+	}
+
+
+	match action {
+		"-ls" => {
+			println!("Tracked Files:");
+			for i in &object {
+				print!("{}, ", i);
+			}
+			println!("");
+		},
+		"-r" => {
+			for i in value {
+				let _ = object.retain(|e| e != i);
+			}
+		},
+		"-a" => {
+			for i in value {
+				object.push(i.clone());
+			}
+		},
+		&_ => {
+			println!("Unrecognized flag {}", action);
+		}
+	}
+
+	
+	match key {
+		"files" => config.files = object.clone(),
+		&_ => println!("You shouldnt be here")
+	}
+
+
+	let _ = write_config(FILE_NAME, config);
 }
 
 fn main() {
 
-	let args: Args = arguments();
+	let mut args: Args = arguments();
 
 	if args.argc < 1 {
 		return;
 	}
 
 	match args.argv[0].as_str() {
-		"compiler" => str_config("compiler", args.argv[1].as_str()),
-		"file" => arr_config("compiler", "-a", &["1", "2", "3"]),
-		_ => println!("NAAAAAAAHHHH"),
+		"init" => init(),
+		"compiler" | "header_dir" | "outfile" => {
+			if args.argc < 2 {
+				args.argv.push(String::from(""));
+				args.argv.push(String::from(""));
+			}
+			
+			str_config(args.argv[0].as_str(), &args.argv[1].as_str());
+		},
+		"file" => {
+			
+			if args.argc < 3 {
+				arr_config("files", "-ls", &[String::from("")]);
+				return;
+			}
+
+			arr_config("files", args.argv[1].as_str(), &args.argv[2..]);
+		},
+		_ => println!("Incorect Function"),
 	}
 
 }

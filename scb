@@ -1,1 +1,1 @@
-{"compiler": "gcc", "files": ["main.c"], "headerDir": "../", "outfile": "main"}
+{"compiler":"gcc","header_dir":"../","outfile":"main","files":["main.c"]}
