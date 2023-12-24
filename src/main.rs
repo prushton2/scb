@@ -3,6 +3,9 @@ use serde::{Serialize, Deserialize};
 use serde_json;
 use std::fs;
 use std::io::Write;
+use std::process::{Command};
+use execute::Execute;
+
 
 #[derive(Serialize, Deserialize)]
 struct Config {
@@ -82,12 +85,39 @@ fn init() {
 		compiler: "gcc".to_string(),
 		header_dir: "../".to_string(),
 		outfile: "main".to_string(),
-		files: vec!["main.c".to_string()]
+		files: vec![]
 	};
 
 	let _ = write_config(FILE_NAME, config);
 }
-// fn build() {}
+
+fn build(args: &str) {
+	let config_result = load_config(FILE_NAME);
+	
+	if config_result.is_err() {
+		println!("Error loading config");
+		return;
+	}
+
+	let config = config_result.unwrap();
+	
+	let mut command = Command::new(config.compiler);
+
+	command.arg("-I");
+	command.arg(config.header_dir.clone());
+	for i in config.files {
+		command.arg(i);
+	}
+	command.arg("-o");
+	command.arg(config.outfile.clone());
+	
+	let _output_result = command.execute_output();
+
+	if args == "-r" {
+		let _ = Command::new(format!("./{}", config.outfile)).execute_output();
+	}
+	
+}
 // fn help() {}
 
 fn str_config(key: &str, value: &str) {
@@ -187,6 +217,12 @@ fn main() {
 
 	match args.argv[0].as_str() {
 		"init" => init(),
+		"build" => {
+			if args.argc < 2 {
+				args.argv.push(String::from(""));
+			}
+			build(args.argv[1].as_str());
+		}
 		"compiler" | "header_dir" | "outfile" => {
 			if args.argc < 2 {
 				args.argv.push(String::from(""));
