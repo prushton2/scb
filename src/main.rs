@@ -222,7 +222,7 @@ fn main() {
 	if args.argc < 1 {
 		let successful = load_config(FILE_NAME);
 		if successful.is_ok() {
-			let _ = 1build("-r");
+			let _ = build("-r");
 		} else {
 			init();
 		}	
