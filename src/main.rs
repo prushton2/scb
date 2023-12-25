@@ -51,7 +51,6 @@ fn load_config(file_name: &str) -> Result<Config, &str> {
 
 
 	if file_contents.is_err() {
-		println!("File could not be read.");
 		return Err("File could not be read")
 	}
 
@@ -91,12 +90,11 @@ fn init() {
 	let _ = write_config(FILE_NAME, config);
 }
 
-fn build(args: &str) {
+fn build(args: &str) -> Result<&str, &str> {
 	let config_result = load_config(FILE_NAME);
 	
 	if config_result.is_err() {
-		println!("Error loading config");
-		return;
+		return Err("Error loading config");
 	}
 
 	let config = config_result.unwrap();
@@ -111,11 +109,21 @@ fn build(args: &str) {
 	command.arg("-o");
 	command.arg(config.outfile.clone());
 	
-	let _output_result = command.execute_output();
+	let output_result = command.execute_output();
+
+	if output_result.is_err() {
+		return Err("Build failed");
+	}
 
 	if args == "-r" {
-		let _ = Command::new(format!("./{}", config.outfile)).execute_output();
+		let run_result = Command::new(format!("./{}", config.outfile)).execute_output();
+	
+		if run_result.is_err() {
+			return Err("Run failed, build succeeded");
+		}
 	}
+
+	return Ok("Ran successfully");
 	
 }
 // fn help() {}
@@ -131,7 +139,7 @@ fn str_config(key: &str, value: &str) {
 
 	let mut object: String = String::from("");
 
-	match key {
+	match key { //make sure nothing dumb can be done (like referencing a nonexistent key)
 		"compiler" => object = config.compiler.clone(),
 		"header_dir" => object = config.header_dir.clone(),
 		"outfile" => object = config.outfile.clone(),
@@ -212,6 +220,12 @@ fn main() {
 	let mut args: Args = arguments();
 
 	if args.argc < 1 {
+		let successful = load_config(FILE_NAME);
+		if successful.is_ok() {
+			let _ = 1build("-r");
+		} else {
+			init();
+		}	
 		return;
 	}
 
@@ -221,7 +235,7 @@ fn main() {
 			if args.argc < 2 {
 				args.argv.push(String::from(""));
 			}
-			build(args.argv[1].as_str());
+			let _ = build(args.argv[1].as_str());
 		}
 		"compiler" | "header_dir" | "outfile" => {
 			if args.argc < 2 {
