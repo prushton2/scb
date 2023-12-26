@@ -126,7 +126,45 @@ fn build(args: &str) -> Result<&str, &str> {
 	return Ok("Ran successfully");
 	
 }
-// fn help() {}
+
+fn help() {
+	println!("SCB Help
+
+scb
+	initializes the project if not initialized
+	if initialized, it compiles and runs the code
+
+init
+	initializes the build tool by creating the file scb. Add this to your gitignore
+
+file
+	Manages files the build tool should keep track of
+	Arguments
+	-a   [files]  Takes a list of files and tracks them
+	-r   [files]  Takes a list of files and untracks them
+	-ls           Lists tracked files
+
+header
+	Displays the current header directory
+	Arguments
+	-s   [dir]  Sets the directory as the header directory
+
+out
+	Displays the outfile
+	Arguments
+	-s   [file]  Sets the file as the outfile
+	
+compiler
+	Displays the current compiler
+	Arguments
+	-s   [compiler]  Updates the compiler
+
+build
+	Builds the project
+	Arguments
+	-r   Runs the project after building
+	");
+}
 
 fn str_config(key: &str, value: &str) {
 	let result: Result<Config, &str> = load_config(FILE_NAME);
@@ -254,6 +292,9 @@ fn main() {
 
 			arr_config("files", args.argv[1].as_str(), &args.argv[2..]);
 		},
+		"-h" | "--help" => {
+			help();
+		}
 		_ => println!("Incorect Function"),
 	}
 
