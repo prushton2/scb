@@ -1,3 +1,8 @@
 build
 dist
 main.spec
+scb
+
+# Added by cargo
+
+/target

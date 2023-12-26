@@ -1,0 +1,12 @@
+[package]
+name = "scb"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+execute = "0.2.13"
+serde = {version = "1.0.193", features = ["derive"]}
+serde_arrays = "0.1.0"
+serde_json = "1.0.108"
