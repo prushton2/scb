@@ -1,9 +1,6 @@
 mod file;
 mod commands;
-
-
-
-
+mod tests;
 
 fn main() {
 
@@ -51,3 +48,5 @@ fn main() {
 	}
 
 }
+
+
