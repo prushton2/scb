@@ -18,6 +18,7 @@ fn main() {
 
 	match args.argv[0].as_str() {
 		"init" => commands::init(),
+		"remove" => commands::remove(),
 		"build" => {
 			if args.argc < 2 {
 				args.argv.push(String::from(""));

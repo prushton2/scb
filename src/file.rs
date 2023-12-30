@@ -77,3 +77,14 @@ pub fn write_config(file_name: &str, config: Config) -> Result<&str, &str> {
 	return Ok("File Written")
 }
 
+
+
+pub fn delete_file(file_name: &str) -> Result<&str, &str> {
+	let result = fs::remove_file(file_name);
+
+	if result.is_ok() {
+		return Ok("File Removed");
+	} else {
+		return Err("Error occurred during file removal");
+	}
+}

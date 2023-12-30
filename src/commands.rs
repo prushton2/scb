@@ -178,3 +178,14 @@ pub fn arr_config(key: &str, action: &str, value: &[String]) {
 
 	let _ = file::write_config(FILE_NAME, config);
 }
+
+
+pub fn remove() {
+	let result = file::delete_file(FILE_NAME);
+
+	if result.is_ok() {
+		println!("Removed SCB");
+	} else {
+		println!("Error removing SCB:\n {:?}", result.err());
+	}
+}
