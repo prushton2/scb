@@ -70,7 +70,7 @@ mod tests {
 			}
 		}
 		
-		command::remove();
+		commands::remove();
 
 	}
 }	
