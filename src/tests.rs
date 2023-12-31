@@ -21,25 +21,40 @@ mod tests {
 	}
 
 
-	//the only array config option is files, so no need for a loop here
+	//the only array config option is files
 	//just append, check, remove, check	
 	#[test]
 	#[serial]
 	fn test_arr_config() {
 
 		commands::init();
-		let files: &[String; 2] = &[String::from("file1"), String::from("file2")];
+		let test_keys: [&str; 1] = ["files"];
+		let test_array: &[String; 3] = &[String::from("file1"), String::from("file2"), String::from("string!")];
 
-		commands::arr_config("files", "-a", files);
-		let mut config: file::Config = file::load_config(commands::FILE_NAME).unwrap();
+		for i in test_keys {
 
-		assert_eq!(config.files[0], files[0]);
-		assert_eq!(config.files[1], files[1]);
+			commands::arr_config(i, "-a", test_array);
+			let mut config: file::Config = file::load_config(commands::FILE_NAME).unwrap();
+			
+			match i {
+				"files" => {
+					assert_eq!(config.files[0], test_array[0]);
+					assert_eq!(config.files[1], test_array[1]);
+					assert_eq!(config.files[2], test_array[2]);
+				},
+				&_ => {}
+			}
 
-		commands::arr_config("files", "-r", files);
-		config = file::load_config(commands::FILE_NAME).unwrap();
-
-		assert_eq!(config.files.len(), 0);
+			commands::arr_config(i, "-r", test_array);
+			config = file::load_config(commands::FILE_NAME).unwrap();
+			
+			match i {
+				"files" => {
+					assert_eq!(config.files.len(), 0);
+				},
+				&_ => {}
+			}
+		}
 
 		commands::remove();
 	}
@@ -69,6 +84,20 @@ mod tests {
 				};
 			}
 		}
+		
+		commands::remove();
+
+	}
+
+	#[test]
+	#[serial]
+	fn test_build() {
+
+		commands::init();
+		commands::arr_config("files", "-a", &[String::from("main.c")]);
+
+		let result = commands::build("");
+		assert!(result.is_ok());
 		
 		commands::remove();
 
