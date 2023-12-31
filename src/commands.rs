@@ -63,6 +63,9 @@ scb
 init
 	initializes the build tool by creating the file scb. Add this to your gitignore
 
+remove
+	removes the scb file
+
 file
 	Manages files the build tool should keep track of
 	Arguments
