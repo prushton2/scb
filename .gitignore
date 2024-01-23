@@ -6,3 +6,8 @@ scb
 # Added by cargo
 
 /target
+
+
+# This lets me test this easier
+main
+main.c

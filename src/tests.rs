@@ -1,7 +1,7 @@
 #[cfg(test)]
 mod tests {
 	use crate::commands;
-	use crate::file;
+	use crate::file::{Config};
 	use serial_test::serial;
 	
 	#[test]
@@ -12,11 +12,11 @@ mod tests {
 	fn test_init_remove() {
 		
 		commands::init();
-		let mut exists = file::load_config(commands::FILE_NAME);
+		let mut exists = Config::load(commands::FILE_NAME);
 		assert!(exists.is_ok());
 	
 		commands::remove();		
-		exists = file::load_config(commands::FILE_NAME);
+		exists = Config::load(commands::FILE_NAME);
 		assert!(!exists.is_ok());
 	}
 
@@ -34,7 +34,7 @@ mod tests {
 		for i in test_keys {
 
 			commands::arr_config(i, "-a", test_array);
-			let mut config: file::Config = file::load_config(commands::FILE_NAME).unwrap();
+			let mut config: Config = Config::load(commands::FILE_NAME).unwrap();
 			
 			match i {
 				"files" => {
@@ -46,7 +46,7 @@ mod tests {
 			}
 
 			commands::arr_config(i, "-r", test_array);
-			config = file::load_config(commands::FILE_NAME).unwrap();
+			config = Config::load(commands::FILE_NAME).unwrap();
 			
 			match i {
 				"files" => {
@@ -73,7 +73,7 @@ mod tests {
 			for j in test_keys {
 				
 				commands::str_config(j, i);
-				let config: file::Config = file::load_config(commands::FILE_NAME).unwrap();
+				let config: Config = Config::load(commands::FILE_NAME).unwrap();
 				
 				//this feels like a  sin
 				match j {

@@ -1,4 +1,4 @@
-use crate::file;
+use crate::file::{Config};
 use std::process::{Command};
 use execute::Execute;
 
@@ -6,18 +6,18 @@ pub const FILE_NAME: &str = "scb"; //not great practice to keep it in here
 
 
 pub fn init() {
-	let config: file::Config = file::Config {
+	let config: Config = Config {
 		compiler: "gcc".to_string(),
 		header_dir: "../".to_string(),
 		outfile: "main".to_string(),
 		files: vec![]
 	};
 
-	let _ = file::write_config(FILE_NAME, config);
+	let _ = config.write(FILE_NAME);
 }
 
 pub fn build(args: &str) -> Result<&str, &str> {
-	let config_result = file::load_config(FILE_NAME);
+	let config_result = Config::load(FILE_NAME);
 	
 	if config_result.is_err() {
 		return Err("Error loading config");
@@ -96,13 +96,13 @@ build
 }
 
 pub fn str_config(key: &str, value: &str) {
-	let result: Result<file::Config, &str> = file::load_config(FILE_NAME);
+	let result: Result<Config, &str> = Config::load(FILE_NAME);
 	if result.is_err() {
 		println!("Error loading config");
 		return;
 	}
 
-	let mut config: file::Config = result.unwrap();
+	let mut config: Config = result.unwrap();
 
 	let mut object: String = String::from("");
 
@@ -129,17 +129,17 @@ pub fn str_config(key: &str, value: &str) {
 	}
 
 
-	let _ = file::write_config(FILE_NAME, config);
+	let _ = config.write(FILE_NAME);
 }
 
 pub fn arr_config(key: &str, action: &str, value: &[String]) {
-	let result: Result<file::Config, &str> = file::load_config(FILE_NAME);
+	let result: Result<Config, &str> = Config::load(FILE_NAME);
 	if result.is_err() {
 		println!("Error loading config");
 		return;
 	}
 
-	let mut config: file::Config = result.unwrap();
+	let mut config: Config = result.unwrap();
 
 	let mut object: Vec<String> = vec![];
 
@@ -179,12 +179,12 @@ pub fn arr_config(key: &str, action: &str, value: &[String]) {
 	}
 
 
-	let _ = file::write_config(FILE_NAME, config);
+	let _ = config.write(FILE_NAME);
 }
 
 
 pub fn remove() {
-	let result = file::delete_file(FILE_NAME);
+	let result = Config::delete(FILE_NAME);
 
 	if result.is_ok() {
 		println!("Removed SCB");

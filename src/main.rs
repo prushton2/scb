@@ -1,13 +1,16 @@
-mod file;
 mod commands;
 mod tests;
+mod file;
+
+use crate::file::{Config, Args};
+
 
 fn main() {
 
-	let mut args: file::Args = file::arguments();
+	let mut args: Args = Args::get();
 
 	if args.argc < 1 {
-		let successful = file::load_config(commands::FILE_NAME);
+		let successful = Config::load(commands::FILE_NAME);
 		if successful.is_ok() {
 			let _ = commands::build("-r");
 		} else {
