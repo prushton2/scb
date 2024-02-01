@@ -10,6 +10,7 @@ pub struct Config {
 	pub compiler: String,
 	pub header_dir: String,
 	pub outfile: String,
+    pub start_time: u128,
 	pub files: Vec<String>,
 }
 
@@ -89,6 +90,18 @@ impl Config {
 			return Err("Error occurred during file removal");
 		}
 	}
+
+    pub fn speedrun_read_expected_output(file_name: &str) -> Result<String, &str> {
+    
+        let file_contents = fs::read_to_string(file_name);
+
+        if file_contents.is_err() {
+            return Err("Cound not load file");
+        }
+
+        return Ok(file_contents.unwrap());
+
+    }
 }
 
 

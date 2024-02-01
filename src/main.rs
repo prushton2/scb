@@ -8,16 +8,25 @@ use crate::file::{Config, Args};
 fn main() {
 
 	let mut args: Args = Args::get();
+    let successful = Config::load(commands::FILE_NAME);
+	
 
-	if args.argc < 1 {
-		let successful = Config::load(commands::FILE_NAME);
+    if args.argc < 1 {
 		if successful.is_ok() {
-			let _ = commands::build("-r");
-		} else {
+	        
+            if successful.unwrap().start_time == 0 {
+                let _ = commands::build("-r", false);
+            } else {
+                let _ = commands::speedrun_build();
+            }
+
+        } else {
 			commands::init();
 		}	
 		return;
 	}
+
+    
 
 	match args.argv[0].as_str() {
 		"init" => commands::init(),
@@ -26,8 +35,11 @@ fn main() {
 			if args.argc < 2 {
 				args.argv.push(String::from(""));
 			}
-			let _ = commands::build(args.argv[1].as_str());
-		}
+			let _ = commands::build(args.argv[1].as_str(), false);
+            
+
+
+        }
 		"compiler" | "header_dir" | "outfile" => {
 			if args.argc < 2 {
 				args.argv.push(String::from(""));
@@ -47,8 +59,12 @@ fn main() {
 		},
 		"-h" | "--help" => {
 			commands::help();
-		}
-		_ => println!("Incorect Function"),
+		},
+        "--speedrun-start" | "-s" => {
+            let _ = commands::speedrun_start();
+
+        },
+        _ => println!("Incorect Function"),
 	}
 
 }
