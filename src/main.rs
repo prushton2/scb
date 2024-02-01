@@ -61,8 +61,13 @@ fn main() {
 			commands::help();
 		},
         "--speedrun-start" | "-s" => {
-            let _ = commands::speedrun_start();
-
+            let result = commands::speedrun_start();
+            
+            if result.is_ok() {
+                println!("Speedrun Started!");
+            } else {
+                println!("An error occurred. Type 'scb' to help diagnose");
+            }
         },
         _ => println!("Incorect Function"),
 	}

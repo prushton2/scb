@@ -246,7 +246,12 @@ pub fn speedrun_build() {
             .duration_since(UNIX_EPOCH)
             .expect("Time went backwards");
         
-        println!("\nComplete! Time stopped at {}s", (since_the_epoch.as_millis() as f64 - config.start_time as f64)/1000.000);
+        println!("\nComplete! Time stopped at {}m {}s", 
+                
+                (since_the_epoch.as_millis()- config.start_time)/1000/60,
+                (since_the_epoch.as_millis() as f64 - config.start_time as f64)/1000.000%60.0
+
+            );
         
         config.start_time = 0;
         let _ = config.write(FILE_NAME);
