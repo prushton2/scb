@@ -43,4 +43,11 @@ Arguments:<br/>
 Builds the project
 
 Arguments:<br/>
-`-r`              Runs the built executable
+`-r`  Runs the built executable
+
+
+# --speedrun-start
+Initiates speedrun mode, starting a timer when the command is run. Whenever you build during speedrun mode, it will check the output against the text inside `scb_expected_output.txt`. When it detects a match, it will end speedrun mode and display the time spent
+
+Alias:<br/>
+-s
